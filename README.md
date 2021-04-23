@@ -1,3 +1,28 @@
+# cloud4t0r version 
+
+2.0.1 version : 
+
+
+    - the lambda.zip file is now obtained by recompiling the sources of the last commit of the most recent stable branch and not at all while unpacking an old version of rpm EPEL from RHEL7
+
+
+    - The code has been revised to be able to use version 3.8 of the AWS lambda runtime and last version of requirments
+
+
+    - all the executables and embedded libraries have been stripped
+
+
+    - python cache files (.pyc) have been excluded from the generated zip
+
+
+
+you should no longer have a warning in the lambda log that the scan engine is out of date, just after installing it
+
+all the original documentation that follows is still valid except that you must now use the Python 3.8 instead of 3.7 Runtime while creating the lambdas functions.
+
+
+##from here it is the original README copied by the fork of the UPSIDE repository
+
 # bucket-antivirus-function
 
 [![CircleCI](https://circleci.com/gh/upsidetravel/bucket-antivirus-function.svg?style=svg)](https://circleci.com/gh/upsidetravel/bucket-antivirus-function)
