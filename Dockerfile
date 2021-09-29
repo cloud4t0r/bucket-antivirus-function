@@ -11,7 +11,7 @@ COPY requirements.txt /var/task/requirements.txt
 
 # Install packages
 RUN yum update -y && amazon-linux-extras enable python3.8 && yum clean metadata && yum install python3.8 -y && yum install -y cpio yum-utils zip unzip less libcurl-devel binutils openssl openssl-devel wget tar && yum groupinstall -y "Development Tools" 
-RUN yum install -y cpio yum-utils zip unzip less git make autoconf automake libtool libtool-ltdl\* pkg-config gcc-c++ cmake3 wget check bzip2-\* libxml2-\* pcre2-\* json-c-\* ncurses-\* 
+RUN yum install -y cpio yum-utils zip unzip less git make autoconf automake libtool libtool-ltdl\* pkg-config gcc-c++ cmake3 wget check bzip2-\* libxml2-\* pcre2-\* json-c-\* ncurses-\* sendmail-milter\* 
 
 # This had --no-cache-dir, tracing through multiple tickets led to a problem in wheel
 RUN /usr/bin/pip3 --version
@@ -35,8 +35,10 @@ RUN git clone https://github.com/Cisco-Talos/clamav-devel.git && \
     cd clamav-devel && \
     git checkout $(git branch -r|grep rel|sort -V|tail -1) && \
     mkdir build && cd build && \
+    ln -s /usr/lib64/libmilter.so.1.0 /usr/lib64/libmilter.so && ldconfig && \
     /usr/local/bin/cmake .. -DCMAKE_INSTALL_PREFIX=/usr/local/clamav && \ 
     make -j8 && make install
+    #/usr/local/bin/cmake .. -DCMAKE_INSTALL_PREFIX=/usr/local/clamav -DENABLE_JSON_SHARED=OFF && \ 
 
 # Copy over the binaries and libraries
 RUN cp -Rp /usr/local/clamav/bin/clamscan /usr/local/clamav/bin/freshclam /usr/local/clamav/lib64/* /var/task/bin/ && rm -Rf /var/task/bin/pkgonfig \
