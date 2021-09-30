@@ -11,7 +11,7 @@ COPY requirements.txt /var/task/requirements.txt
 
 # Install packages
 RUN yum update -y && amazon-linux-extras enable python3.8 && yum clean metadata && yum install python3.8 -y && yum install -y cpio yum-utils zip unzip less libcurl-devel binutils openssl openssl-devel wget tar && yum groupinstall -y "Development Tools" 
-RUN yum install -y cpio yum-utils zip unzip less git make autoconf automake libtool libtool-ltdl\* pkg-config gcc-c++ cmake3 wget check bzip2-\* libxml2-\* pcre2-\* json-c-\* ncurses-\* sendmail-milter\* 
+RUN yum install -y cpio yum-utils zip unzip less git make autoconf automake libtool libtool-ltdl\* pkg-config gcc-c++ cmake3 wget check bzip2-\* libxml2-\* pcre2-\* json-c-\* ncurses-\* sendmail-devel\* 
 
 # This had --no-cache-dir, tracing through multiple tickets led to a problem in wheel
 RUN /usr/bin/pip3 --version
@@ -20,9 +20,14 @@ RUN rm -rf /root/.cache/pip
 
 # Download libraries we need to run in lambda
 WORKDIR /tmp
-RUN yumdownloader -x \*i686 --archlist=x86_64 json-c pcre2
+RUN yumdownloader -x \*i686 --archlist=x86_64 json-c pcre2 libprelude gnutls libtasn1 lib64nettle nettle
 RUN rpm2cpio json-c*.rpm | cpio -idmv
 RUN rpm2cpio pcre*.rpm | cpio -idmv
+RUN rpm2cpio gnutls* | cpio -idmv
+RUN rpm2cpio nettle* | cpio -idmv
+RUN rpm2cpio lib* | cpio -idmv
+RUN rpm2cpio *.rpm | cpio -idmv
+RUN rpm2cpio libtasn1* | cpio -idmv
 RUN wget https://github.com/Kitware/CMake/archive/refs/tags/v3.21.3.tar.gz && \
     tar zxvf v3.21.3.tar.gz && cd CMake-3.21.3 && \
     mkdir build && cd build && cmake3 .. -DCMAKE_INSTALL_PREFIX=/usr/local && \
@@ -35,10 +40,8 @@ RUN git clone https://github.com/Cisco-Talos/clamav-devel.git && \
     cd clamav-devel && \
     git checkout $(git branch -r|grep rel|sort -V|tail -1) && \
     mkdir build && cd build && \
-    ln -s /usr/lib64/libmilter.so.1.0 /usr/lib64/libmilter.so && ldconfig && \
     /usr/local/bin/cmake .. -DCMAKE_INSTALL_PREFIX=/usr/local/clamav && \ 
-    make -j8 && make install
-    #/usr/local/bin/cmake .. -DCMAKE_INSTALL_PREFIX=/usr/local/clamav -DENABLE_JSON_SHARED=OFF && \ 
+    make -j4 && make install
 
 # Copy over the binaries and libraries
 RUN cp -Rp /usr/local/clamav/bin/clamscan /usr/local/clamav/bin/freshclam /usr/local/clamav/lib64/* /var/task/bin/ && rm -Rf /var/task/bin/pkgonfig \
