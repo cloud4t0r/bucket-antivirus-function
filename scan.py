@@ -244,11 +244,11 @@ def lambda_handler(event, context):
             logging.debug("Downloading definition file %s from s3://%s" % (local_path, s3_path))
             s3.Bucket(AV_DEFINITION_S3_BUCKET).download_file(s3_path, local_path)
             logging.debug("Downloading definition file %s complete!" % (local_path))
-        scan_result, scan_signature = clamav.scan_file(file_path)
-        logging.info(
-            "Scan of s3://%s resulted in %s\n"
-            % (os.path.join(s3_object.bucket_name, s3_object.key), scan_result)
-        )
+    scan_result, scan_signature = clamav.scan_file(file_path)
+    logging.info(
+        "Scan of s3://%s resulted in %s\n"
+        % (os.path.join(s3_object.bucket_name, s3_object.key), scan_result)
+    )
 
     result_time = get_timestamp()
     # Set the properties on the object with the scan results
