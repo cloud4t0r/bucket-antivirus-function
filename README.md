@@ -1,5 +1,9 @@
 # cloud4t0r version 
 
+2.0.2 version :
+
+    -  the compilation processus now take care of clamav >= 0.104 CMAKE syntax
+    
 2.0.1 version : 
 
 
