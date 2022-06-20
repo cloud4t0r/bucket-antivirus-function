@@ -11,7 +11,8 @@ COPY requirements.txt /var/task/requirements.txt
 
 # Install packages
 RUN yum update -y && amazon-linux-extras enable python3.8 && yum clean metadata && yum install python3.8 -y && yum install -y cpio yum-utils zip unzip less libcurl-devel binutils openssl openssl-devel wget tar && yum groupinstall -y "Development Tools" 
-RUN yum install -y cpio yum-utils zip unzip less git make autoconf automake libtool libtool-ltdl\* pkg-config gcc-c++ cmake3 wget check bzip2-\* libxml2-\* pcre2-\* json-c-\* ncurses-\* sendmail-devel\* 
+RUN yum install https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm -y
+RUN yum install -y cpio yum-utils zip unzip less git make autoconf automake libtool libtool-ltdl\* pkg-config gcc-c++ cmake3 wget check bzip2-\* libxml2-\* pcre2-\* json-c-\* ncurses-\* sendmail-devel\* rustfmt rust-gdb
 
 # This had --no-cache-dir, tracing through multiple tickets led to a problem in wheel
 RUN /usr/bin/pip3 --version
@@ -46,7 +47,7 @@ RUN git clone https://github.com/Cisco-Talos/clamav-devel.git && \
 # Copy over the binaries and libraries
 RUN cp -Rp /usr/local/clamav/bin/clamscan /usr/local/clamav/bin/freshclam /usr/local/clamav/lib64/* /var/task/bin/ && rm -Rf /var/task/bin/pkgonfig \
     && cp -p /usr/bin/ld.bfd /var/task/bin/ld \
-    && cp -p /usr/lib64/libbfd-2.29.1-30.amzn2.so /var/task/bin
+    && cp -p /usr/lib64/libbfd-2.29.1-*.amzn2.so /var/task/bin
 RUN for i in $(ldd /var/task/bin/freshclam|awk '{print $1}'|grep -v "linux"|grep -v "clam"); do cp /lib64/$i /var/task/bin/; done 
 RUN for i in $(ldd /var/task/bin/clamscan|awk '{print $1}'|grep -v "linux"|grep -v "clam"); do cp /lib64/$i /var/task/bin/; done 
 RUN strip /var/task/bin/* 2>/dev/null || true 
