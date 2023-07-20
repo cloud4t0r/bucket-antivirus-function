@@ -1,5 +1,24 @@
 # cloud4t0r version 
 
+2.0.4 version :
+
+    -  test build with clamav 1.1.0 engine
+    -  fix amazonlinux2 default yum timeout cause build to failed in docker when servers was too busy
+    -  fix urllib3 to 1.26.16 because 2.0.0 need ssl requirements not meet in aws 3.8 python at runtime
+    -  fix clamscan output cause lambda to failed at runtime with following error when binary file is considered as archive and file_names displayed contains
+       non utf-8 decodabled bytes sequences:
+
+    
+       
+ Starting clamscan of /tmp/xxxxx-antivirus-scan-prd/xxxxxxxxxxxxxxxxx/contents/xxxx/fichier2.mp3
+[ERROR] UnicodeDecodeError: 'utf-8' codec can't decode byte 0x83 in position 249: invalid start byte
+Traceback (most recent call last):
+File "/var/task/scan.py", line 247, in lambda_handler
+scan_result, scan_signature = clamav.scan_file(file_path)
+File "/var/task/clamav.py", line 192, in scan_file
+output = av_proc.communicate()[0].decode()
+
+
 2.0.3 version :
 
     -  the compilation processus now take care of clamav >= 0.105 rust dependancies 
