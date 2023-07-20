@@ -13,6 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import re
 import datetime
 import hashlib
 import os
@@ -189,7 +190,8 @@ def scan_file(path):
         stdout=subprocess.PIPE,
         env=av_env,
     )
-    output = av_proc.communicate()[0].decode()
+    output = av_proc.communicate()[0].decode('latin-1')
+    output = re.sub(r'[^\x00-\x7f]',r'*', output)
     logging.info("clamscan output:\n%s" % output)
 
     # Turn the output into a data source we can read

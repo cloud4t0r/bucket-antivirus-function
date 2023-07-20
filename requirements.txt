@@ -5,6 +5,6 @@ decorator
 idna
 requests
 simplejson
-urllib3
+urllib3==1.26.16
 pytz
 ###certifi-2020.12.5 chardet-4.0.0 datadog-0.40.1 decorator-5.0.7 idna-3.1 pip-21.0.1 pytz-2021.1 requests-2.25.1 setuptools-56.0.0 simplejson-3.17.2 urllib3-1.26.4

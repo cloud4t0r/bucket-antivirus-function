@@ -10,7 +10,7 @@ COPY ./*.py /var/task/
 COPY requirements.txt /var/task/requirements.txt
 
 # Install packages
-RUN yum update -y && amazon-linux-extras enable python3.8 && yum clean metadata && yum install python3.8 -y && yum install -y cpio yum-utils zip unzip less libcurl-devel binutils openssl openssl-devel wget tar && yum groupinstall -y "Development Tools" 
+RUN sed -i 's/timeout=5/timeout=15/g' /etc/yum.conf && yum update -y && amazon-linux-extras enable python3.8 && yum clean metadata && yum install python3.8 -y && yum install -y cpio yum-utils zip unzip less libcurl-devel binutils openssl openssl-devel wget tar && yum groupinstall -y "Development Tools" 
 RUN yum install https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm -y
 RUN yum install -y cpio yum-utils zip unzip less git make autoconf automake libtool libtool-ltdl\* pkg-config gcc-c++ cmake3 wget check bzip2-\* libxml2-\* pcre2-\* json-c-\* ncurses-\* sendmail-devel\* rustfmt rust-gdb
 
